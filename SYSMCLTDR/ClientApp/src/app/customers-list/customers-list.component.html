@@ -1,0 +1,52 @@
+
+<div *ngIf="loading">
+  <!--<mat-spinner></mat-spinner>-->
+</div>
+<div class="add-customer-container">
+  
+  <button (click)="showAddCustomer = !showAddCustomer">Add New Customer</button>
+  <br />
+  <form *ngIf="showAddCustomer" (ngSubmit)="addCustomer()">
+    <div>
+      <br />
+      <label>Name:</label>
+      <input type="text" [(ngModel)]="newCustomer.Name" name="name" required>
+    </div>
+    <br />
+    <div>
+      <label>Customer Number:</label>
+      <input type="text" [(ngModel)]="newCustomer.CustomerNumber" name="customerNumber" required>
+    </div>
+    <br />
+    <button type="submit">Add Customer</button>
+  </form>
+</div>
+
+
+<table *ngIf="!loading">
+
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Customer Number</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let customer of customers">
+      <td>
+        <div *ngIf="editingId === customer.id">
+          <input type="text" [(ngModel)]="customer.name">
+          <button (click)="updateCustomer(customer.id)">Save</button>
+          <button (click)="cancelEditing()">Cancel</button>
+        </div>
+        <div *ngIf="editingId !== customer.id">
+          <a [routerLink]="['/customer-detail', customer.customerNumber]">{{ customer.name }}</a>
+        </div>
+      </td>
+      
+      <td>{{ customer.customerNumber }}</td>
+      <td><button *ngIf="editingId !== customer.id" (click)="editingId = customer.id">Edit</button><button>Delete</button></td>
+    </tr>
+  </tbody>
+</table>

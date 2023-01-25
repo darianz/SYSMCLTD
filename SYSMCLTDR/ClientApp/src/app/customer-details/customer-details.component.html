@@ -1,0 +1,20 @@
+<div *ngIf="customer">
+  <h2>{{ customer.name }}</h2>
+  <span>Customer Number: {{customer.customerNumber}}</span>
+  <br>
+  <span>Created On {{customer.created}}</span>
+  <h3>Addresses</h3>
+  <ul *ngIf="hasAddresses; else noAddresses">
+    <li *ngFor="let address of addresses">Street: {{ address.street }} City: {{ address.city }}</li>
+  </ul>
+  <ng-template #noAddresses>
+    <p>No Addresses found.</p>
+  </ng-template>
+  <h3>Contacts</h3>
+  <ul *ngIf="hasContacts; else noContacts">
+    <li *ngFor="let contact of contacts">Full Name: {{ contact.fullName }} Email: {{ contact.email }}</li>
+  </ul>
+  <ng-template #noContacts>
+    <p>No Contacts found.</p>
+  </ng-template>
+</div>
