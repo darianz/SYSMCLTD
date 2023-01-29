@@ -37,7 +37,7 @@
       <td>
         <div *ngIf="editingId === customer.id">
           <input type="text" [(ngModel)]="customer.name">
-          <button (click)="updateCustomer(customer.id)">Save</button>
+          <button (click)="updateCustomer(customer.customerNumber, customer.name)">Save</button>
           <button (click)="cancelEditing()">Cancel</button>
         </div>
         <div *ngIf="editingId !== customer.id">
@@ -46,7 +46,7 @@
       </td>
       
       <td>{{ customer.customerNumber }}</td>
-      <td><button *ngIf="editingId !== customer.id" (click)="editingId = customer.id">Edit</button><button>Delete</button></td>
+      <td><button *ngIf="editingId !== customer.id" (click)="editingId = customer.id">Edit</button><button (click)="deleteCustomer(customer.customerNumber)">Delete</button></td>
     </tr>
   </tbody>
 </table>

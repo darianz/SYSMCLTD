@@ -21,7 +21,7 @@ namespace SYSMCLTDR.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customers>>> GetCustomers()
         {
-            return await _context.Customers.ToListAsync();
+            return await _context.Customers.Where(c => c.IsDeleted == false).ToListAsync();
         }
 
         // GET: api/Customers/5
@@ -69,53 +69,42 @@ namespace SYSMCLTDR.Controllers
         }
 
 
-        // PUT: api/Customers/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCustomer(int id, [FromBody] Customers customer)
+        // Patch: api/Customers/5
+        [HttpPatch("{CustomerNumber}")]
+        public async Task<IActionResult> UpdateCustomer(string CustomerNumber,[FromBody] UpdateCustomerRequest requestBody)
         {
-            if (id != customer.Id)
-            {
-                return BadRequest();
-            }
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var customerToUpdate = await _context.Customers.FindAsync(id);
+            var customerToUpdate = await _context.Customers.FirstOrDefaultAsync(c => c.CustomerNumber == CustomerNumber);
             if (customerToUpdate == null)
             {
-                return NotFound();
+                return NotFound("CustomerNumber Not Exist");
             }
-            _context.Entry(customerToUpdate).CurrentValues.SetValues(customer);
+         
+            customerToUpdate.Name = requestBody.Name;
+            _context.Customers.Update(customerToUpdate);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CustomerExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
             return NoContent();
         }
 
 
+
         // DELETE: api/Customers/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Customers>> DeleteCustomer(int id)
+        [HttpDelete("{CustomerNumber}")]
+        public async Task<ActionResult<Customers>> DeleteCustomer(string CustomerNumber)
         {
-            var customer = await _context.Customers.FindAsync(id);
-            if (customer == null)
+            var customerToUpdate = await _context.Customers.FirstOrDefaultAsync(c => c.CustomerNumber == CustomerNumber);
+            if (customerToUpdate == null)
             {
-                return NotFound();
+                return NotFound("CustomerNumber Not Exist");
             }
-            customer.IsDeleted = true;
+
+            customerToUpdate.IsDeleted = true;
             await _context.SaveChangesAsync();
 
             return Ok();
@@ -130,7 +119,10 @@ namespace SYSMCLTDR.Controllers
         {
             return _context.Customers.Any(e => e.CustomerNumber == CustomerNumber);
         }
-
+        public class UpdateCustomerRequest
+        {
+            public string Name { get; set; }
+        }
         //// POST: api/Customers/5/contacts
         //[HttpPost]
         //public async Task<ActionResult<Contacts>> AddContactToCustomer(int customerId, [FromBody] Contacts contact)

@@ -9,7 +9,7 @@ namespace SYSMCLTDR.Models
         {
             Created = DateTime.Now;
         }
-        [Required]
+       
         public string Name { get; set; }
         [Required]
         [RegularExpression("^[0-9]{9}$", ErrorMessage = "CustomerNumber must be 9 digits long and can only contain numbers.")]
